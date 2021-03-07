@@ -54,8 +54,11 @@ namespace Complete
                     nTankes++;
                   //  DeleteCamera(0);
                   //  DeleteCamera(1);
-                      AddCamera(0, mainCam);
-                      AddCamera(1, mainCam);
+                      AddCamera(0, "");
+                      AddCamera(1, "");
+                     AddCamera(3, "minicam");
+                    GameObject cameraMinimap =  GameObject.Find("P4_Cam");
+                    cameraMinimap.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("MiniCam"));
                     miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
                     SpawnTanks(nTankes);
 
@@ -80,23 +83,26 @@ namespace Complete
 					Instantiate (m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
 				m_Tanks[i].m_PlayerNumber = i + 1;
 				m_Tanks[i].Setup();
-				AddCamera (i, mainCam);
-			}
+				AddCamera (i, "");
+                changeCamera(i, true, "");
+            }
 
 			mainCam.gameObject.SetActive (false);
 		}
 
         private void SpawnTanks(int tank)
         {
+            
             tank--;
            // Camera mainCam = GameObject.Find("Main Camera").GetComponent<Camera>();
             m_Tanks[tank].m_Instance =
             Instantiate(m_TankPrefab, m_Tanks[tank].m_SpawnPoint.position, m_Tanks[tank].m_SpawnPoint.rotation) as GameObject;
             m_Tanks[tank].m_PlayerNumber = tank + 1;
             m_Tanks[tank].Setup();
-            AddCamera(tank, mainCam);
-          //  SetCameraTargets();
-          //  mainCam.gameObject.SetActive(false);
+            AddCamera(tank, "");
+            changeCamera(tank, true, "");
+            //  SetCameraTargets();
+            //  mainCam.gameObject.SetActive(false);
         }
 
         private void DeleteCamera (int i)  //Elimina camaras
@@ -105,107 +111,172 @@ namespace Complete
            // GameObject.Find("Camera" + (i + 1)).SetActive(false);
         }
 
-        private void AddCamera (int i, GameObject mainCam)
+        private void AddCamera (int i, string minicam)
         {
-            //	GameObject childCam = new GameObject ("FollowCam" + (i + 1));
-          //  Debug.Log("entro por " + (i + 1));
-            if (GameObject.Find("FollowCam" + (i + 1))==null) {
-            //    Debug.Log("Creo cam " + i + 1);
-                GameObject newCam = new GameObject("FollowCam" + (i + 1));
-                newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
+           if (minicam=="minicam")
+            {
+                GameObject newCam = GameObject.Instantiate(GameObject.Find("MiniMap"));
+                newCam.name = ("Minicam3P");
+               /* newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
+                newCam.AddComponent<Camera>();
                 // newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
                 //    newCam = mainCam;
                 //  newCam.name = "FollowCam" + (i + 1);
-                newCam.layer = 10 + i + 1; //Asigna al layer correcto segun la camara
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = m_Tanks[i].m_Instance.transform;
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().LookAt = m_Tanks[i].m_Instance.transform;
+                newCam.layer = 16; //Asigna al layer correcto segun la camara
+                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = miniCam.transform;
+                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().LookAt = miniCam.transform;
                 newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
-                 newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().AddCinemachineComponent<Cinemachine.CinemachineHardLookAt>();
+                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().AddCinemachineComponent<Cinemachine.CinemachineHardLookAt>();
                 newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineHardLookAt>();
-                
+
                 newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_BindingMode = 0;
                 newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_FollowOffset = new Vector3(15f, 15f, 15f);
-                newCam.transform.parent = m_Tanks[i].m_Instance.transform;
-                
-
-            }
-
-            Camera camObject = GameObject.Find("P" + (i + 1) + "_Cam").GetComponent<Camera>();
-            if (nTankes == 2)
-            {
-                if (i == 0)
-                {
-                    camObject.rect = new Rect(0.0f, 0.5f, 1f, 0.5f);
-                    
-                }
-                else
-                {
-                    camObject.rect = new Rect(0f, 0.0f, 1f, 0.5f);
-
-                }
+                //  newCam.transform.parent = m_Tanks[i].m_Instance.transform;*/
+                newCam.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("MiniCam"));
+                newCam.GetComponent<Camera>().rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
             }
             else
             {
-                switch (i)
+
+
+                //	GameObject childCam = new GameObject ("FollowCam" + (i + 1));
+                //  Debug.Log("entro por " + (i + 1));
+                if (GameObject.Find("FollowCam" + (i + 1)) == null)
                 {
-                    case 0:
-                        //    Camera camObject1 = GameObject.Find("P1_Cam").GetComponent<Camera>();
-                        //    camObject1.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
-                        camObject.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
-                        Debug.Log("Reconfiguro cam 1");
-                        break;
+                    //    Debug.Log("Creo cam " + i + 1);
+                    GameObject newCam = new GameObject("FollowCam" + (i + 1));
+                    newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
+                    // newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
+                    //    newCam = mainCam;
+                    //  newCam.name = "FollowCam" + (i + 1);
+                    newCam.layer = 10 + i + 1; //Asigna al layer correcto segun la camara
+                    newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = m_Tanks[i].m_Instance.transform;
+                    newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().LookAt = m_Tanks[i].m_Instance.transform;
+                    newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
+                    newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().AddCinemachineComponent<Cinemachine.CinemachineHardLookAt>();
+                    newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineHardLookAt>();
 
-                    case 1:
-                        //   Camera camObject2 = GameObject.Find("P2_Cam").GetComponent<Camera>();
-                        //  camObject2.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
-                        camObject.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
-                        break;
-                    case 2:
-                        camObject.rect = new Rect(0f, 0f, 0.5f, 0.5f);
-                        break;
-                    case 3:
-                        camObject.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
-                        break;
+                    newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_BindingMode = 0;
+                    newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_FollowOffset = new Vector3(15f, 15f, 15f);
+                    newCam.transform.parent = m_Tanks[i].m_Instance.transform;
 
-                } 
-            }        
+
+                }
+
+                Camera camObject = GameObject.Find("P" + (i + 1) + "_Cam").GetComponent<Camera>();
+                if (nTankes == 2)
+                {
+                    if (i == 0)
+                    {
+                        camObject.rect = new Rect(0.0f, 0.5f, 1f, 0.5f);
+
+                    }
+                    else
+                    {
+                        camObject.rect = new Rect(0f, 0.0f, 1f, 0.5f);
+
+                    }
+                }
+                else
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            //    Camera camObject1 = GameObject.Find("P1_Cam").GetComponent<Camera>();
+                            //    camObject1.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
+                            camObject.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
+                            Debug.Log("Reconfiguro cam 1");
+                            break;
+
+                        case 1:
+                            //   Camera camObject2 = GameObject.Find("P2_Cam").GetComponent<Camera>();
+                            //  camObject2.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                            camObject.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                            break;
+                        case 2:
+                            Camera camObjectMiniCam = GameObject.Find("MiniMap").GetComponent<Camera>();
+                            camObject.rect = new Rect(0f, 0f, 0.5f, 0.5f);
+                            camObjectMiniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
+                            break;
+                        case 3:
+                            camObject.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
+                            break;
+
+                    }
+                }
+            }
 		}
-
+// set depth eliminable
         public void SetDepthCam(Camera camara, float depth)
         {
             camara.depth = depth;
         }
+
+
+        public void SetPriorityCam(Camera camara, int priority)
+        {
+            camara.GetComponentInParent<Cinemachine.CinemachineVirtualCamera>().Priority = priority;
+        }
+
+
+        public void changeCamera(int i, bool aparece, string tipoCam)
+        {
+
+            GameObject newCam = GameObject.Find("P" + (i + 1) + "_Cam");
+            if (aparece)
+            {
+                newCam.GetComponent<Camera>().cullingMask |= 1 <<( LayerMask.NameToLayer("Cam" + (i + 1)));
+            }
+            else
+            {
+                newCam.GetComponent<Camera>().cullingMask &= ~( 1<< LayerMask.NameToLayer("Cam" + (i + 1)));
+                if (tipoCam == "mini")
+                {
+                    newCam.GetComponent<Camera>().cullingMask &= ~(1 << (LayerMask.NameToLayer("DeathCam")));
+                    newCam.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("MiniCam"));
+                }
+                if (tipoCam == "death") 
+                {
+                    newCam.GetComponent<Camera>().cullingMask &= ~(1 << (LayerMask.NameToLayer("MiniCam"))); //forzamos a que aparezca la layer de la deathcam si antes tenía un minimapa eliminando el layer ene lcullingmask
+                    newCam.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("DeathCam"));
+                }
+            }
+           
+            // newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = m_Tanks[i].m_Instance.transform;
+            // newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().LookAt = GameObject.Find(Camera).transform;
+
+        }
+
         public void ReconfigureCamera(int i)
         {
             tankPlaying=0;
-            SetDepthCam(miniCam, -2);
-            SetDepthCam(deathcam, -3);
+         //   SetDepthCam(miniCam, 2);
+         //   SetDepthCam(deathcam, 1);
 
             for (int x = 0; x < nTankes; x++)
             {
-                // ... and if one of them is active, it is the winner so return it
+                // comprobamos cuantos hay eliminados
                 if (m_Tanks[x].m_Instance.GetComponent<TankHealth>().m_Dead)
                 {
                     tankPlaying++;
                 }
             }
-            if (tankPlaying == 0)
-            {
-                Debug.Log("Holi");
-            }
-            if (tankPlaying == 1 && nTankes!=3)
+
+            if (tankPlaying == 1 && nTankes!=3) //un eliminado y estan jugando 3 o 4 pondremos camara de muerte, si existen 3 player significa que ya hay una minicam, no hay que volver a mostrarla
             {
                 switch (i - 1)
                 {
                     case 0:
                         if (nTankes != 2)
                         {
-                            miniCam.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
+                            changeCamera(0, false, "mini");
+                           // miniCam.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
                         }
                         if (nTankes ==2)
                         {
-                            SetDepthCam(deathcam, -1.5f);
-                            deathcam.rect = new Rect(0.0f, 0.5f, 1f, 0.5f);
+                            changeCamera(0, false, "death");
+                            //    SetDepthCam(deathcam, -1.5f);
+                            //    deathcam.rect = new Rect(0.0f, 0.5f, 1f, 0.5f);
                         }
                         break;
 
@@ -213,41 +284,55 @@ namespace Complete
                         
                         if (nTankes != 2) // Evita que al haber solo 2 player de inicio se cambie la camara al ser destruido uno de ellos
                         {
-                            miniCam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                            changeCamera(1, false, "mini");
+                            // miniCam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
                         }
                         if (nTankes==2)
                         {
-                            SetDepthCam(deathcam, -1.5f);
-                            deathcam.rect = new Rect(0f, 0.0f, 1f, 0.5f);
+                            changeCamera(1, false, "death");
+                       //     SetDepthCam(deathcam, -1.5f);
+                       //     deathcam.rect = new Rect(0f, 0.0f, 1f, 0.5f);
                         }
                         break;
                     case 2:
-                        miniCam.rect = new Rect(0f, 0f, 0.5f, 0.5f);
+                        changeCamera(2, false, "mini"); 
+                     //   miniCam.rect = new Rect(0f, 0f, 0.5f, 0.5f);
+                    //    SetPriorityCam(miniCam, 11);
                         break;
                     case 3:
-                        miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
+                        changeCamera(3, false, "mini");
+                        //   miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
+                        //   SetPriorityCam(miniCam, 11);
                         break;
                 }
             }
             else
             {
-              if (tankPlaying==2  || (tankPlaying==1 && nTankes==3))  
-                switch (i - 1)
+              if (tankPlaying>=2  || (tankPlaying==1 && nTankes == 3))
+                {
+                    changeCamera(i - 1, false, "death"); 
+                }
+                    
+            /*    switch (i - 1)
                 {
                     case 0:
-                        deathcam.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
-                        break;
+                            changeCamera(0, false, "death");
+                            //deathcam.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
+                            break;
 
                     case 1:
-                        deathcam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
-                        break;
+                            changeCamera(1, false, "death");
+                            //deathcam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                            break;
                     case 2:
-                        deathcam.rect = new Rect(0f, 0f, 0.5f, 0.5f);
+                            changeCamera(2,false,"death");
+                        //    deathcam.rect = new Rect(0f, 0f, 0.5f, 0.5f);
                         break;
                     case 3:
-                        deathcam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
+                            changeCamera(3,false,"death");
+                      //  deathcam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
                         break;
-                }
+                }*/
             }          
         }
 
@@ -454,6 +539,7 @@ namespace Complete
         {
             for (int i = 0; i < nTankes; i++)
             {
+                changeCamera(i, true, ""); //devolvemos la vista de la camara a los players
                 m_Tanks[i].Reset();
             }
         }
