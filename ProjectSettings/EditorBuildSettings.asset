@@ -14,4 +14,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Complete-Game.unity
     guid: 37961ba4d27bd46428d20c2ffe403dc3
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: b0f6023710f3a5947b5993c85a3a4e1e,
+      type: 2}

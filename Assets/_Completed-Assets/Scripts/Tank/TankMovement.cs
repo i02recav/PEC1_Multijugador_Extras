@@ -37,6 +37,10 @@ namespace Complete
             m_TurnInputValue = 0f;
         }
 
+        private void OnMovement()
+        {
+            
+        }
 
         private void OnDisable()
         {

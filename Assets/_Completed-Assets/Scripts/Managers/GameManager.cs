@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -270,13 +271,10 @@ namespace Complete
                         if (nTankes != 2)
                         {
                             changeCamera(0, false, "mini");
-                           // miniCam.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
                         }
                         if (nTankes ==2)
                         {
                             changeCamera(0, false, "death");
-                            //    SetDepthCam(deathcam, -1.5f);
-                            //    deathcam.rect = new Rect(0.0f, 0.5f, 1f, 0.5f);
                         }
                         break;
 
@@ -285,24 +283,18 @@ namespace Complete
                         if (nTankes != 2) // Evita que al haber solo 2 player de inicio se cambie la camara al ser destruido uno de ellos
                         {
                             changeCamera(1, false, "mini");
-                            // miniCam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
                         }
                         if (nTankes==2)
                         {
                             changeCamera(1, false, "death");
-                       //     SetDepthCam(deathcam, -1.5f);
-                       //     deathcam.rect = new Rect(0f, 0.0f, 1f, 0.5f);
                         }
                         break;
                     case 2:
                         changeCamera(2, false, "mini"); 
-                     //   miniCam.rect = new Rect(0f, 0f, 0.5f, 0.5f);
-                    //    SetPriorityCam(miniCam, 11);
                         break;
                     case 3:
                         changeCamera(3, false, "mini");
-                        //   miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
-                        //   SetPriorityCam(miniCam, 11);
+
                         break;
                 }
             }
@@ -311,28 +303,7 @@ namespace Complete
               if (tankPlaying>=2  || (tankPlaying==1 && nTankes == 3))
                 {
                     changeCamera(i - 1, false, "death"); 
-                }
-                    
-            /*    switch (i - 1)
-                {
-                    case 0:
-                            changeCamera(0, false, "death");
-                            //deathcam.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
-                            break;
-
-                    case 1:
-                            changeCamera(1, false, "death");
-                            //deathcam.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
-                            break;
-                    case 2:
-                            changeCamera(2,false,"death");
-                        //    deathcam.rect = new Rect(0f, 0f, 0.5f, 0.5f);
-                        break;
-                    case 3:
-                            changeCamera(3,false,"death");
-                      //  deathcam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
-                        break;
-                }*/
+                }              
             }          
         }
 
