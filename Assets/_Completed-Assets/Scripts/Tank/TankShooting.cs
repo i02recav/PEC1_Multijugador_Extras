@@ -64,8 +64,20 @@ namespace Complete
                 
         }*/
 
+        private void OnAltFirePress(InputValue inputValue)
+        {
+            m_AltFire = true;
+            OnFirePress(inputValue);
+        }
+
+        private void OnAltFireRelease(InputValue inputValue)
+        {
+            m_AltFire = true;
+            OnFireRelease(inputValue);
+        }
         private void OnFirePress(InputValue inputValue)
         {
+
             // The slider should have a default value of the minimum launch force
             //m_AimSlider.value = m_MinLaunchForce;
             Debug.Log("HOli222222");
@@ -167,7 +179,7 @@ namespace Complete
             // Change the clip to the firing clip and play it
             m_ShootingAudio.clip = m_FireClip;
             m_ShootingAudio.Play();
-
+            m_AltFire = false;
             // Reset the launch force.  This is a precaution in case of missing button events
             m_CurrentLaunchForce = m_MinLaunchForce;
         }

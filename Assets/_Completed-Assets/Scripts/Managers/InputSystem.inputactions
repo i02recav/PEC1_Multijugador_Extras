@@ -38,12 +38,20 @@
                     "interactions": "Hold(duration=0.2,pressPoint=0.1)"
                 },
                 {
-                    "name": "AltFire1",
+                    "name": "AltFirePress",
                     "type": "Button",
                     "id": "a2f05842-6066-4c3c-af07-ecf0b22b42c3",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
+                },
+                {
+                    "name": "AltFireRelease",
+                    "type": "Button",
+                    "id": "04bdacdc-621b-4028-a9a7-019b9f452c48",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -76,7 +84,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "AltFire1",
+                    "action": "AltFirePress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -87,7 +95,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Controller1",
-                    "action": "AltFire1",
+                    "action": "AltFirePress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -198,6 +206,28 @@
                     "processors": "",
                     "groups": "Controller1",
                     "action": "FireHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "49af1f93-351a-43fb-a363-360c6fdaeb56",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "AltFireRelease",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dfd09d2d-3d25-4328-b6c7-108b7cf81e81",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller1",
+                    "action": "AltFireRelease",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

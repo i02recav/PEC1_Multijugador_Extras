@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using UnityEngine.InputSystem;
 namespace Complete
 {
     public class TankMovement : MonoBehaviour
@@ -37,9 +37,10 @@ namespace Complete
             m_TurnInputValue = 0f;
         }
 
-        private void OnMovement()
+        private void OnMovement(InputValue value)
         {
-            
+            m_MovementInputValue= value.Get<Vector2>().y;
+            m_TurnInputValue = value.Get<Vector2>().x;
         }
 
         private void OnDisable()
@@ -52,8 +53,8 @@ namespace Complete
         private void Start()
         {
             // The axes names are based on player number
-            m_MovementAxisName = "Vertical" + m_PlayerNumber;
-            m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+      //      m_MovementAxisName = "Vertical" + m_PlayerNumber;
+       //     m_TurnAxisName = "Horizontal" + m_PlayerNumber;
 
             // Store the original pitch of the audio source
             m_OriginalPitch = m_MovementAudio.pitch;
@@ -63,8 +64,8 @@ namespace Complete
         private void Update ()
         {
             // Store the value of both input axes
-            m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
-            m_TurnInputValue = Input.GetAxis (m_TurnAxisName);
+        //    m_MovementInputValue = Input.GetAxis (m_MovementAxisName);
+        //    m_TurnInputValue = Input.GetAxis (m_TurnAxisName);
 
             EngineAudio();
         }
