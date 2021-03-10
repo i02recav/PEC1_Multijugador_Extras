@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
+using UnityEngine.InputSystem.Users;
 namespace Complete
 {
     public class TankMovement : MonoBehaviour
@@ -50,7 +52,7 @@ namespace Complete
         }
 
 
-        private void Start()
+        public void Start()
         {
             // The axes names are based on player number
       //      m_MovementAxisName = "Vertical" + m_PlayerNumber;
@@ -58,6 +60,62 @@ namespace Complete
 
             // Store the original pitch of the audio source
             m_OriginalPitch = m_MovementAudio.pitch;
+            //    var playerInput = PlayerInput.Instantiate( controlScheme: "Keyboard" + m_PlayerNumber);
+
+            //  this.GetComponent<PlayerInput>().SwitchCurrentControlScheme("Keyboard" + m_PlayerNumber, Keyboard.current);
+            //    this.GetComponent<PlayerInput>().user
+            // this.GetComponent<PlayerInput>().SwitchCurrentControlScheme("Keyboard" + m_PlayerNumber);
+
+
+            /*         PlayerInput multieven = GameObject.Find("MultiPlayerEventSystemP" + m_PlayerNumber).GetComponent<PlayerInput>();
+                     multieven.defaultControlScheme="Keyboard" + m_PlayerNumber;
+                     multieven.SwitchCurrentControlScheme("Keyboard1", Keyboard.current);
+
+                     multieven.defaultActionMap = "Player" + m_PlayerNumber;
+                     MultiplayerEventSystem multiplayer = GameObject.Find("MultiPlayerEventSystemP" + m_PlayerNumber).GetComponent<MultiplayerEventSystem>();
+                     multiplayer.playerRoot = GameObject.Find("GameManager").GetComponent<GameManager>().m_Tanks[m_PlayerNumber-1].m_Instance;
+
+                     // Get a reference to this Player's Input
+                     PlayerInput input = multiplayer.GetComponent<PlayerInput>();
+
+                     // Perform Pairing with the Keyboard
+                     InputUser.PerformPairingWithDevice(Keyboard.current, input.user);*/
+
+            PlayerInput multieven = GameObject.Find("GameManager").GetComponent<GameManager>().m_Tanks[m_PlayerNumber - 1].m_Instance.GetComponent<PlayerInput>();
+            multieven.defaultControlScheme = "Keyboard1"; // + m_PlayerNumber;
+            multieven.SwitchCurrentControlScheme("Keyboard1", Keyboard.current);
+
+            multieven.defaultActionMap = "Player" + m_PlayerNumber;
+            MultiplayerEventSystem multiplayer = GameObject.Find("MultiPlayerEventSystemP" + m_PlayerNumber).GetComponent<MultiplayerEventSystem>();
+            multiplayer.playerRoot = GameObject.Find("GameManager").GetComponent<GameManager>().m_Tanks[m_PlayerNumber - 1].m_Instance;
+
+            // Get a reference to this Player's Input
+            PlayerInput input = GameObject.Find("GameManager").GetComponent<GameManager>().m_Tanks[m_PlayerNumber - 1].m_Instance.GetComponent<PlayerInput>();
+            input.uiInputModule = multiplayer.GetComponent<InputSystemUIInputModule>();
+            input.actions = GameObject.Find("GameManager").GetComponent<GameManager>().m_Tanks[m_PlayerNumber - 1].m_Instance.GetComponent<PlayerInput>().actions;
+            input.SwitchCurrentActionMap("Player" + (m_PlayerNumber));
+            Debug.Log("Player " + input.currentActionMap.id);
+            // Perform Pairing with the Keyboard
+            InputUser.PerformPairingWithDevice(Keyboard.current, input.user);
+            // Perform Pairing with the Keyboard
+       /*     InputUser.PerformPairingWithDevice(Keyboard.current, input.user);
+
+
+            MultiplayerEventSystem mpev = GameObject.Find("MultiPlayerEventSystemP" + playerNumber).GetComponent<MultiplayerEventSystem>();
+
+            // Set this MultiplayerEventSystem's Player Root to the Tank instance
+            mpev.playerRoot = tankInstance;
+
+            // Get a reference to this Player's Input
+            PlayerInput input = tankInstance.GetComponent<PlayerInput>();
+            input.uiInputModule = mpev.GetComponent<InputSystemUIInputModule>();
+            input.actions = m_Tanks[0].m_Instance.GetComponent<PlayerInput>().actions;
+            input.SwitchCurrentActionMap("Player" + playerNumber);
+            Debug.Log("Player " + input.currentActionMap.id);
+            // Perform Pairing with the Keyboard
+            InputUser.PerformPairingWithDevice(Keyboard.current, input.user);*/
+
+
         }
 
 

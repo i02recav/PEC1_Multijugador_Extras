@@ -43,7 +43,7 @@ namespace Complete
         }
 
 
-        public void TakeDamage (float amount)
+        public void TakeDamage (float amount, int playerEnemy) //agregamos logica para saber quien ha eliminado al tanke
         {
             // Reduce current health by the amount of damage done
             m_CurrentHealth -= amount;
@@ -54,6 +54,10 @@ namespace Complete
             // If the current health is at or below zero and it has not yet been registered, call OnDeath
             if (m_CurrentHealth <= 0f && !m_Dead)
             {
+                if (playerEnemy==this.GetComponent<TankMovement>().m_PlayerNumber)  //Comprueba quien es el tanke que te ha matado, si es el mismo resta puntuacion en vez de sumar
+                    GameObject.Find("GameManager").GetComponent<GameManager>().m_Tanks[playerEnemy - 1].points--;
+                else
+                    GameObject.Find("GameManager").GetComponent<GameManager>().m_Tanks[playerEnemy - 1].points++;
                 OnDeath ();
             }
         }

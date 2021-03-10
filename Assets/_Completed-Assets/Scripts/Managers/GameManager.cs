@@ -1,7 +1,9 @@
 using System.Collections;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem.UI;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.UI;
 
 namespace Complete
@@ -11,10 +13,12 @@ namespace Complete
         public int m_NumRoundsToWin = 1;            // The number of rounds a single player has to win to win the game
         public float m_StartDelay = 3f;             // The delay between the start of RoundStarting and RoundPlaying phases
         public float m_EndDelay = 3f;               // The delay between the end of RoundPlaying and RoundEnding phases
+        
         public CameraControl m_CameraControl;       // Reference to the CameraControl script for control during different phases
         public Text m_MessageText;                  // Reference to the overlay Text to display winning text, etc.
         public GameObject m_TankPrefab;             // Reference to the prefab the players will control
         public TankManager[] m_Tanks;               // A collection of managers for enabling and disabling different aspects of the tanks
+        public PlayerInput[] m_playerInput;
         public int nTankes, tankPlaying;
         public Camera miniCam, deathcam;
         public GameObject mainCam;
@@ -23,11 +27,12 @@ namespace Complete
         private WaitForSeconds m_EndWait;           // Used to have a delay whilst the round or game ends
         private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won
         private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won
-
+        public bool nextPlayer;
 
         private void Start()
         {
             //            GlobalVariables.Instance.nPlayers = 2;
+            nextPlayer = false;
             nTankes = 2;
             tankPlaying = 0;
             mainCam = GameObject.Find("FollowCam");
@@ -47,7 +52,7 @@ namespace Complete
         private void Update()
         {
 
-            if (Input.GetButtonDown("Start3") || Input.GetButtonDown("Start4"))
+            if (nextPlayer)
             {
                 if (nTankes == 2)
                 {
@@ -62,14 +67,33 @@ namespace Complete
                     cameraMinimap.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("MiniCam"));
                     miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
                     SpawnTanks(nTankes);
+                    nextPlayer = false;
 
                 }else
-                if (nTankes==3 && Input.GetButtonDown("Start4"))
+                if (nTankes==3 && nextPlayer)
                 {
                     nTankes = 4;
                     SpawnTanks(nTankes);
                 }
             }
+        }
+
+        private void ReconectKeyboard(GameObject tankInstance, int playerNumber)
+        {
+            // Get a reference to this player's MultiplayerEventSystem
+            MultiplayerEventSystem mpev = GameObject.Find("MultiPlayerEventSystemP" + playerNumber).GetComponent<MultiplayerEventSystem>();
+
+            // Set this MultiplayerEventSystem's Player Root to the Tank instance
+            mpev.playerRoot = tankInstance;
+
+            // Get a reference to this Player's Input
+            PlayerInput input = tankInstance.GetComponent<PlayerInput>();
+            input.uiInputModule = mpev.GetComponent<InputSystemUIInputModule>();
+            input.actions= m_Tanks[0].m_Instance.GetComponent<PlayerInput>().actions;
+            input.SwitchCurrentActionMap("Player" + playerNumber);
+            Debug.Log("Player "+input.currentActionMap.id);
+            // Perform Pairing with the Keyboard
+            InputUser.PerformPairingWithDevice(Keyboard.current, input.user);
         }
 
         private void SpawnAllTanks()
@@ -79,13 +103,15 @@ namespace Complete
 			// For all the tanks...
             for (int i = 0; i < nTankes; i++)
                 {
-				// ... create them, set their player number and references needed for control
-				m_Tanks[i].m_Instance =
-					Instantiate (m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+                // ... create them, set their player number and references needed for control
+                m_Tanks[i].m_Instance = Instantiate(m_TankPrefab, m_Tanks[i].m_SpawnPoint.position, m_Tanks[i].m_SpawnPoint.rotation) as GameObject;
+
+            //    m_playerInput[i]= PlayerInput.Instantiate(m_TankPrefab, controlScheme:"Keyboard1", pairWithDevice: Keyboard.current);
 				m_Tanks[i].m_PlayerNumber = i + 1;
 				m_Tanks[i].Setup();
 				AddCamera (i, "");
                 changeCamera(i, true, "");
+                ReconectKeyboard(m_Tanks[i].m_Instance, m_Tanks[i].m_PlayerNumber);
             }
 
 			mainCam.gameObject.SetActive (false);
@@ -96,12 +122,12 @@ namespace Complete
             
             tank--;
            // Camera mainCam = GameObject.Find("Main Camera").GetComponent<Camera>();
-            m_Tanks[tank].m_Instance =
-            Instantiate(m_TankPrefab, m_Tanks[tank].m_SpawnPoint.position, m_Tanks[tank].m_SpawnPoint.rotation) as GameObject;
+            m_Tanks[tank].m_Instance = Instantiate(m_TankPrefab, m_Tanks[tank].m_SpawnPoint.position, m_Tanks[tank].m_SpawnPoint.rotation) as GameObject;
             m_Tanks[tank].m_PlayerNumber = tank + 1;
             m_Tanks[tank].Setup();
             AddCamera(tank, "");
             changeCamera(tank, true, "");
+           ReconectKeyboard(m_Tanks[tank].m_Instance, m_Tanks[tank].m_PlayerNumber);
             //  SetCameraTargets();
             //  mainCam.gameObject.SetActive(false);
         }
