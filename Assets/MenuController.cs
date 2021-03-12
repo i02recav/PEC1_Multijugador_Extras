@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class MenuController : MonoBehaviour
 {
@@ -14,26 +15,35 @@ public class MenuController : MonoBehaviour
         nPlayers = 2;
         Unselectall();
         selectorItem2.SetActive(true);
+        selectorPosition = 0;
     }
 
     // Update is called once per frame
-    void Update()
+    void Update() //Cada vez que hay una variación de la variable selectorPosition, la cual se produce en las funciones que se activan mediante el inputmanager, llama a la funcion SwitchPlayer que guarda la posicion de la seleccion y activa el gameobject que lo resalta
     {
-        selectorPosition = 0;
-        if (Input.GetKeyDown(KeyCode.RightArrow)) selectorPosition = 1;
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) selectorPosition = -1;
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            GlobalVariables.Instance.nPlayers = nPlayers; // Pasa la variable de forma global para la siguiente escena.
-            SceneManager.LoadScene("_Complete-Game");
-        }
-
         if (selectorPosition!= 0)
         {
             SwitchPlayers(selectorPosition);
         }
     }
-
+     public void OnLeft(InputValue inputValue)
+    {
+        if (inputValue.isPressed)
+        selectorPosition = -1;
+    }
+    public void OnRight(InputValue inputValue)
+    {
+        if (inputValue.isPressed)
+            selectorPosition = +1;
+    }
+    public void OnEnter(InputValue inputValue)
+    {
+        if (inputValue.isPressed)
+        {
+            GlobalVariables.Instance.nPlayers = nPlayers; // Pasa la variable de forma global para la siguiente escena.
+            SceneManager.LoadScene("_Complete-Game");
+        }
+    }
     public void SwitchPlayers(float position)
     {
         if (position < 0)
@@ -67,9 +77,10 @@ public class MenuController : MonoBehaviour
                 selectorItem2.SetActive(true);
                 break;             
         }
+        selectorPosition = 0;
     }
 
-    public void Unselectall()
+    public void Unselectall() //Limpia los gameobject de seleccion para marcar desde el switchplayer solo el que proceda.
     {
         selectorItem2.SetActive(false);
         selectorItem3.SetActive(false);

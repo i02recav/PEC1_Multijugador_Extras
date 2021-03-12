@@ -43,107 +43,57 @@ namespace Complete
             isUp = false;
             isDown = false;
             m_Fired = true;
-            // The fire axis is based on the player number
-          //  m_FireButton = "Fire" + m_PlayerNumber;
 			m_AltFireButton = "AltFire" + m_PlayerNumber;
-
-
             // The rate that the launch force charges up is the range of possible forces by the max charge time
             m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
 
         }
-/*      private  void OnFirePress(InputValue inputValue)
-        {
 
-
-            if (inputValue.isPressed)
-            {
-
-
-            }   // Otherwise, if the fire button is being held and the shell hasn't been launched yet...
-                
-        }*/
-
-        public void OnPlayer3()
+/* FUNCIONES DE LAS ACCIONES DEFINIDAS EN EL INPUT SYSTEM, Contienen la lógica tras las pulsación de las teclas */
+        public void OnPlayer3() // Botón para que inicie la partida el jugador 3 
         {
             GameObject.Find("GameManager").GetComponent<GameManager>().nextPlayer = true;
         }
-        public void OnPlayer4()
+        public void OnPlayer4() // Botón para que inicie la partida el jugador 4
         {
             GameObject.Find("GameManager").GetComponent<GameManager>().nextPlayer = true;
         }
 
-        public void OnAltFirePress(InputValue inputValue)
+        public void OnAltFirePress(InputValue inputValue) // presionar boton de fuego alternativo
         {
             m_AltFire = true;
             OnFirePress(inputValue);
         }
 
-        public void OnAltFireRelease(InputValue inputValue)
+        public void OnAltFireRelease(InputValue inputValue) // soltar boton de fuego alternativo
         {
             m_AltFire = true;
             OnFireRelease(inputValue);
         }
-        public void OnFirePress(InputValue inputValue)
+
+        public void OnFirePress(InputValue inputValue) // presionar boton de fuegoi
         {
-
-            // The slider should have a default value of the minimum launch force
-            //m_AimSlider.value = m_MinLaunchForce;
-            Debug.Log("HOli222222");
-
             if (inputValue.isPressed && m_Fired)
             {
                 m_Fired = false;
                 m_CurrentLaunchForce = m_MinLaunchForce;
-
                 // Change the clip to the charging clip and start it playing
                 m_ShootingAudio.clip = m_ChargingClip;
                 m_ShootingAudio.Play();
-            }
-
-        
+            }       
         }
-        private void OnFireRelease(InputValue inputValue)
-        {
-            
-            
+
+        private void OnFireRelease(InputValue inputValue) // soltar el boton de fuego
+        {      
             if (!inputValue.isPressed)
             {
                 if (!m_Fired)
                 {
-                    // ... launch the shell
-                    
                     Fire();
                 }
             }
  
         }
-
-        
-	/*	private bool FireButton (int mode) {
-
-			bool action = false;
-            
-			m_AltFire = false;
-            
-			switch (mode) {
-			case 0:
-                    action = isDown;
-				m_AltFire = Input.GetButtonDown (m_AltFireButton);					
-			break;
-			case 1:
-                    action = isDown;
-                    m_AltFire = Input.GetButton (m_AltFireButton);
-			break;
-			case 2:
-                    action = isUp;
-                    m_AltFire = Input.GetButtonUp (m_AltFireButton);
-			break;
-			}
-
-			return action || m_AltFire;
-		}*/
-
 
         private void Update()
         {
@@ -154,19 +104,13 @@ namespace Complete
                 m_CurrentLaunchForce = m_MaxLaunchForce;
                 Fire();
             }else
-            if (!m_Fired){
-                
-            
-          
-                Debug.Log("HOli");
+            if (!m_Fired)
+            {
                 // Increment the launch force and update the slider
                 m_CurrentLaunchForce += m_ChargeSpeed* Time.deltaTime;
-
-        m_AimSlider.value = m_CurrentLaunchForce;
+                m_AimSlider.value = m_CurrentLaunchForce;
             }
-
-}
-
+        }
 
         private void Fire()  {
             // Set the fired flag so only Fire is only called once
@@ -182,7 +126,7 @@ namespace Complete
 
             // Set the shell's velocity to the launch force in the fire position's forward direction
             shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
-            shellInstance.GetComponent<ShellExplosion>().playerOwner = m_PlayerNumber;
+            shellInstance.GetComponent<ShellExplosion>().playerOwner = m_PlayerNumber; //Le proporcionamos el nuevo objeto el valor del tanke que lo ha disparado
 			if (m_AltFire)
 				shellInstance.velocity *= 1.50f;
 

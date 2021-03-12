@@ -32,9 +32,8 @@ namespace Complete
 
         private void Start()
         {
-            //            GlobalVariables.Instance.nPlayers = 2;
             nextPlayer = false;
-            nTankes = 2;
+            nTankes = GlobalVariables.Instance.nPlayers;
             tankPlaying = 0;
             mainCam = GameObject.Find("FollowCam");
             miniCam = GameObject.Find("MiniMap").GetComponent<Camera>();
@@ -52,54 +51,50 @@ namespace Complete
 
         private void Update()
         {
-
             if (nextPlayer)
             {
-                if (nTankes == 2)
-                {
-                    
+                if (nTankes == 2) //Minimo la partida v a iniciarlizarse con 2 jugadores si se agrega uno nuevo, cambia las camaras,genera la del minimapa y spawnea al nuevo jugador
+                {                   
                     nTankes++;
-                  //  DeleteCamera(0);
-                  //  DeleteCamera(1);
-                      AddCamera(0, "");
-                      AddCamera(1, "");
-                     AddCamera(3, "minicam");
-                    GameObject cameraMinimap =  GameObject.Find("P4_Cam");
-                    cameraMinimap.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("MiniCam"));
-                    miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
+                    AddCamera(0, "");
+                    AddCamera(1, "");
+                    AddCamera(3, "minicam");
+                    ShowMiniCam();                    
                     SpawnTanks(nTankes);
                     nextPlayer = false;
 
                 }else
-                if (nTankes==3 && nextPlayer)
-                {
-                    nTankes = 4;
-                    SpawnTanks(nTankes);
-                }
+                    if (nTankes==3 && nextPlayer) // cuando ya hay 2 jugadores, agrega el cuarto
+                    {
+                        nTankes = 4;
+                        SpawnTanks(nTankes);
+                    }
             }
         }
+        private void ShowMiniCam()
+        {
+            GameObject cameraMinimap = GameObject.Find("P4_Cam");
+            cameraMinimap.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("MiniCam"));
+            miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
+        }
 
-        private void ReconectKeyboard(GameObject tankInstance, int playerNumber)
+        private void ReconectKeyboard(GameObject tankInstance, int playerNumber) //reconecta el teclado al spawnear un nuevo player durante la partida.
         {
             // Get a reference to this player's MultiplayerEventSystem
             MultiplayerEventSystem mpev = GameObject.Find("MultiPlayerEventSystemP" + playerNumber).GetComponent<MultiplayerEventSystem>();
-
             // Set this MultiplayerEventSystem's Player Root to the Tank instance
             mpev.playerRoot = tankInstance;
-
             // Get a reference to this Player's Input
             PlayerInput input = tankInstance.GetComponent<PlayerInput>();
             input.uiInputModule = mpev.GetComponent<InputSystemUIInputModule>();
             input.actions= m_Tanks[0].m_Instance.GetComponent<PlayerInput>().actions;
             input.SwitchCurrentActionMap("Player" + playerNumber);
-            Debug.Log("Player "+input.currentActionMap.id);
             // Perform Pairing with the Keyboard
             InputUser.PerformPairingWithDevice(Keyboard.current, input.user);
         }
 
         private void SpawnAllTanks()
 		{
-//			Camera mainCam = GameObject.Find ("Main Camera").GetComponent<Camera>();
 
 			// For all the tanks...
             for (int i = 0; i < nTankes; i++)
@@ -113,7 +108,7 @@ namespace Complete
 				AddCamera (i, "");
                 changeCamera(i, true, "");
                 ReconectKeyboard(m_Tanks[i].m_Instance, m_Tanks[i].m_PlayerNumber);
-              //  HUD.GetComponent<HUDController>().ActiveHUD(i);
+              if (i==2) ShowMiniCam(); //Si la partida es de 3 jugadores, muestra la minicam en el area del jugador 4.
             }
 
 			mainCam.gameObject.SetActive (false);
@@ -123,62 +118,35 @@ namespace Complete
         {
             
             tank--;
-           // Camera mainCam = GameObject.Find("Main Camera").GetComponent<Camera>();
             m_Tanks[tank].m_Instance = Instantiate(m_TankPrefab, m_Tanks[tank].m_SpawnPoint.position, m_Tanks[tank].m_SpawnPoint.rotation) as GameObject;
             m_Tanks[tank].m_PlayerNumber = tank + 1;
             m_Tanks[tank].Setup();
             AddCamera(tank, "");
             changeCamera(tank, true, "");
-           ReconectKeyboard(m_Tanks[tank].m_Instance, m_Tanks[tank].m_PlayerNumber);
+            ReconectKeyboard(m_Tanks[tank].m_Instance, m_Tanks[tank].m_PlayerNumber);
             HUD.GetComponent<HUDController>().ActiveHUD(tank);
-            //  SetCameraTargets();
-            //  mainCam.gameObject.SetActive(false);
         }
 
         private void DeleteCamera (int i)  //Elimina camaras
         {
             Destroy(GameObject.Find("Camera" + (i + 1)));
-           // GameObject.Find("Camera" + (i + 1)).SetActive(false);
         }
 
-        private void AddCamera (int i, string minicam)
+        private void AddCamera (int i, string minicam) //Agrega camaras
         {
            if (minicam=="minicam")
             {
                 GameObject newCam = GameObject.Instantiate(GameObject.Find("MiniMap"));
                 newCam.name = ("Minicam3P");
-               /* newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
-                newCam.AddComponent<Camera>();
-                // newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
-                //    newCam = mainCam;
-                //  newCam.name = "FollowCam" + (i + 1);
-                newCam.layer = 16; //Asigna al layer correcto segun la camara
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = miniCam.transform;
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().LookAt = miniCam.transform;
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().AddCinemachineComponent<Cinemachine.CinemachineTransposer>();
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().AddCinemachineComponent<Cinemachine.CinemachineHardLookAt>();
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineHardLookAt>();
-
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_BindingMode = 0;
-                newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_FollowOffset = new Vector3(15f, 15f, 15f);
-                //  newCam.transform.parent = m_Tanks[i].m_Instance.transform;*/
                 newCam.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("MiniCam"));
                 newCam.GetComponent<Camera>().rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
             }
             else
             {
-
-
-                //	GameObject childCam = new GameObject ("FollowCam" + (i + 1));
-                //  Debug.Log("entro por " + (i + 1));
                 if (GameObject.Find("FollowCam" + (i + 1)) == null)
                 {
-                    //    Debug.Log("Creo cam " + i + 1);
                     GameObject newCam = new GameObject("FollowCam" + (i + 1));
                     newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
-                    // newCam.AddComponent<Cinemachine.CinemachineVirtualCamera>();
-                    //    newCam = mainCam;
-                    //  newCam.name = "FollowCam" + (i + 1);
                     newCam.layer = 10 + i + 1; //Asigna al layer correcto segun la camara
                     newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = m_Tanks[i].m_Instance.transform;
                     newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().LookAt = m_Tanks[i].m_Instance.transform;
@@ -189,22 +157,19 @@ namespace Complete
                     newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_BindingMode = 0;
                     newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().GetCinemachineComponent<Cinemachine.CinemachineTransposer>().m_FollowOffset = new Vector3(15f, 15f, 15f);
                     newCam.transform.parent = m_Tanks[i].m_Instance.transform;
-
-
                 }
 
                 Camera camObject = GameObject.Find("P" + (i + 1) + "_Cam").GetComponent<Camera>();
+                //Dependeiendo el numero de jugadores recalcula el tamaño de la ventana split
                 if (nTankes == 2)
                 {
                     if (i == 0)
                     {
                         camObject.rect = new Rect(0.0f, 0.5f, 1f, 0.5f);
-
                     }
                     else
                     {
                         camObject.rect = new Rect(0f, 0.0f, 1f, 0.5f);
-
                     }
                 }
                 else
@@ -212,15 +177,9 @@ namespace Complete
                     switch (i)
                     {
                         case 0:
-                            //    Camera camObject1 = GameObject.Find("P1_Cam").GetComponent<Camera>();
-                            //    camObject1.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
                             camObject.rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
-                            Debug.Log("Reconfiguro cam 1");
                             break;
-
                         case 1:
-                            //   Camera camObject2 = GameObject.Find("P2_Cam").GetComponent<Camera>();
-                            //  camObject2.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
                             camObject.rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
                             break;
                         case 2:
@@ -231,25 +190,12 @@ namespace Complete
                         case 3:
                             camObject.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
                             break;
-
                     }
                 }
             }
 		}
-// set depth eliminable
-        public void SetDepthCam(Camera camara, float depth)
-        {
-            camara.depth = depth;
-        }
 
-
-        public void SetPriorityCam(Camera camara, int priority)
-        {
-            camara.GetComponentInParent<Cinemachine.CinemachineVirtualCamera>().Priority = priority;
-        }
-
-
-        public void changeCamera(int i, bool aparece, string tipoCam)
+        public void changeCamera(int i, bool aparece, string tipoCam)  //Juega con activar y desactivar los layer para que la camara apunte a los jugadores, al minimap o al letrero de muerte.
         {
 
             GameObject newCam = GameObject.Find("P" + (i + 1) + "_Cam");
@@ -270,19 +216,12 @@ namespace Complete
                     newCam.GetComponent<Camera>().cullingMask &= ~(1 << (LayerMask.NameToLayer("MiniCam"))); //forzamos a que aparezca la layer de la deathcam si antes tenía un minimapa eliminando el layer ene lcullingmask
                     newCam.GetComponent<Camera>().cullingMask |= 1 << (LayerMask.NameToLayer("DeathCam"));
                 }
-            }
-           
-            // newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = m_Tanks[i].m_Instance.transform;
-            // newCam.GetComponent<Cinemachine.CinemachineVirtualCamera>().LookAt = GameObject.Find(Camera).transform;
-
+            }         
         }
 
         public void ReconfigureCamera(int i)
         {
             tankPlaying=0;
-         //   SetDepthCam(miniCam, 2);
-         //   SetDepthCam(deathcam, 1);
-
             for (int x = 0; x < nTankes; x++)
             {
                 // comprobamos cuantos hay eliminados
@@ -349,10 +288,8 @@ namespace Complete
             }
             if (nTankes == 3) //mostramos el minimapa en caso de iniciar la partida 3 jugadores
             {
-                miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);
-               
+                miniCam.rect = new Rect(0.5f, 0f, 0.5f, 0.5f);              
             }
-
             // These are the targets the camera should follow
             m_CameraControl.m_Targets = targets;
         }

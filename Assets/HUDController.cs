@@ -15,9 +15,11 @@ namespace Complete
         // Start is called before the first frame update
         void Start()
         {
-            hud[0].SetActive(true); //inicializamos los 2 primeros jugadores que participan siempre.
-            hud[1].SetActive(true);
-          
+            for (int n = 0; n < GlobalVariables.Instance.nPlayers; n++)
+            {
+                hud[n].SetActive(true);
+            }
+                
         }
 
         // Update is called once per frame
@@ -40,13 +42,6 @@ namespace Complete
                 points[n].GetComponent<Text>().text = gameManager.GetComponent<GameManager>().GetPoints(n).ToString();
                 victories[n].GetComponent<Text>().text = gameManager.GetComponent<GameManager>().m_Tanks[n].m_Wins.ToString();
             }
-        }
-        public void ShowInformation()
-        {
-            for ( int n=0; n < 4; n++)
-            {
-          //      hud[i].GetComponentinChildren<
-            }
-        }
+        }      
     }
 }

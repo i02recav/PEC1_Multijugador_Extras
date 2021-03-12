@@ -53,7 +53,7 @@ namespace Complete
                 float damage = CalculateDamage (targetRigidbody.position);
 
                 // Deal this damage to the tank
-                targetHealth.TakeDamage (damage, playerOwner);
+                targetHealth.TakeDamage (damage, playerOwner); //Agregamos el numero de tanke que habia lanzado el misil.
             }
 
             // Unparent the particles from the shell

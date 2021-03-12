@@ -660,7 +660,7 @@
                 {
                     "name": "up",
                     "id": "69096ced-fc0d-417a-b8b0-021fbbbdd703",
-                    "path": "<Keyboard>/8",
+                    "path": "<Keyboard>/numpad8",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard1",
@@ -671,7 +671,7 @@
                 {
                     "name": "down",
                     "id": "0abf39a9-4bb6-4df7-b5a5-810f8a527383",
-                    "path": "<Keyboard>/5",
+                    "path": "<Keyboard>/numpad5",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard1",
@@ -682,7 +682,7 @@
                 {
                     "name": "left",
                     "id": "0719f6f0-ea8b-4115-9690-e964d7e19fd8",
-                    "path": "<Keyboard>/4",
+                    "path": "<Keyboard>/numpad4",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard1",
@@ -693,7 +693,7 @@
                 {
                     "name": "right",
                     "id": "3c27799b-813d-4345-a03b-a93cc1261f7b",
-                    "path": "<Keyboard>/6",
+                    "path": "<Keyboard>/numpad6",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard1",
@@ -731,6 +731,71 @@
                     "processors": "",
                     "groups": "Keyboard1",
                     "action": "AltFireRelease",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Menu",
+            "id": "68ea2333-ba87-4f32-b742-9b170f04da68",
+            "actions": [
+                {
+                    "name": "Left",
+                    "type": "Button",
+                    "id": "406d6c7a-2aaa-4f60-b2f8-2c9aca07719f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Right",
+                    "type": "Button",
+                    "id": "a46a5a2f-a4d7-4b52-9ca3-52228f7fd011",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Enter",
+                    "type": "Button",
+                    "id": "cf152f5d-1b05-47db-8146-d24094cbb37d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)"
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "13e2844d-7478-4208-9563-2ff4f4bb4508",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Keyboard1",
+                    "action": "Left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9d2fea4f-c49a-4301-a357-e576f0a3e86b",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Keyboard1",
+                    "action": "Right",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4dfa9dff-7e85-41fa-a951-f916985ed3d1",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Keyboard1",
+                    "action": "Enter",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
