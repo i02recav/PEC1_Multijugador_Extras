@@ -28,6 +28,7 @@ namespace Complete
         private TankManager m_RoundWinner;          // Reference to the winner of the current round.  Used to make an announcement of who won
         private TankManager m_GameWinner;           // Reference to the winner of the game.  Used to make an announcement of who won
         public bool nextPlayer;
+        public GameObject HUD; // Para conectar con el HUD y mostrar las victorias y puntos
 
         private void Start()
         {
@@ -112,6 +113,7 @@ namespace Complete
 				AddCamera (i, "");
                 changeCamera(i, true, "");
                 ReconectKeyboard(m_Tanks[i].m_Instance, m_Tanks[i].m_PlayerNumber);
+              //  HUD.GetComponent<HUDController>().ActiveHUD(i);
             }
 
 			mainCam.gameObject.SetActive (false);
@@ -128,6 +130,7 @@ namespace Complete
             AddCamera(tank, "");
             changeCamera(tank, true, "");
            ReconectKeyboard(m_Tanks[tank].m_Instance, m_Tanks[tank].m_PlayerNumber);
+            HUD.GetComponent<HUDController>().ActiveHUD(tank);
             //  SetCameraTargets();
             //  mainCam.gameObject.SetActive(false);
         }
@@ -497,6 +500,11 @@ namespace Complete
 
             // If no tanks have enough rounds to win, return null
             return null;
+        }
+
+        public int GetPoints(int nPlayer)  //Devuelve el numero de puntos
+        {
+           return m_Tanks[nPlayer].points;
         }
 
 
